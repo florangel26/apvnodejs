@@ -1,10 +1,11 @@
 import Vet from "../models/Vet.js";
 import generateJWT from "../models/helpers/generateJWT.js";
 import generateId from "../models/helpers/generateid.js";
+import emailRegirter from "../models/helpers/emailRegister.js";
 
 
 const register = async (req, res)  =>{
-   const { email } = req.body;
+   const { email, name} = req.body;
 
     // registered user
    const userExists = await Vet.findOne({email})
@@ -16,6 +17,17 @@ const register = async (req, res)  =>{
     try {
         const vet = new Vet(req.body);
         const vetSaved = await vet.save();
+       // send email
+      emailRegirter(
+        { email,
+        name,
+        token: vetSaved.token
+
+        }
+      );
+
+
+
 
         res.json(vetSaved);
 
